@@ -1,0 +1,28 @@
+{
+  "identifier": "0xf2ccb58c588b8740378c6197ec568e95b37e2240ca20a3fb97b1647d61772972",
+  "claimData": {
+    "provider": "http",
+    "parameters": "{\"additionalClientOptions\":{},\"body\":\"\",\"geoLocation\":\"\",\"headers\":{\"Sec-Fetch-Mode\":\"same-origin\",\"Sec-Fetch-Site\":\"same-origin\",\"User-Agent\":\"Mozilla/5.0 (Linux; Android 14; ASUS_AI2302 Build/UKQ1.230917.001) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/132.0.6834.166 Mobile Safari/537.36\"},\"method\":\"GET\",\"paramValues\":{\"lang\":\"en\"},\"responseMatches\":[{\"invert\":false,\"type\":\"contains\",\"value\":\"lang=\\\"{{lang}}\\\"\"}],\"responseRedactions\":[{\"jsonPath\":\"\",\"regex\":\"lang=\\\"(.*?)\\\"\",\"xPath\":\"\"}],\"url\":\"https://github.com/settings/profile\"}",
+    "owner": "0x8f2a44849a7394dfa0585ae0d3c2fb46b9243574",
+    "timestampS": 1740470708,
+    "context": "{\"contextAddress\":\"0x0\",\"contextMessage\":\"sample context\",\"extractedParameters\":{\"lang\":\"en\"},\"providerHash\":\"0xfcee42d80d1b1ed3109b369b8156f5083b62887129127a2a12799dd831461312\"}",
+    "identifier": "0xf2ccb58c588b8740378c6197ec568e95b37e2240ca20a3fb97b1647d61772972",
+    "epoch": 1
+  },
+  "signatures": [
+    "0xcf68937a930cc66f05ba0dcd65adfc3c4638fdf2dd161a7b83e1acdcb27c039d2732d0285502d2c1525864cdf49776cf6e2553b57eab77a39223935df303d1231c"
+  ],
+  "witnesses": [
+    {
+      "id": "0x244897572368eadf65bfbc5aec98d8e5443a9072",
+      "url": "wss://attestor.reclaimprotocol.org/ws"
+    }
+  ],
+  "publicData": {
+    "username": "higurashi00",
+    "editProfile": "Edit profile",
+    "followers": null,
+    "creationYear": "2018",
+    "contributionsLastYear": "2"
+  }
+}

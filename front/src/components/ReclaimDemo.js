@@ -7,6 +7,7 @@ function ReclaimDemo() {
   const [proofs, setProofs] = useState(null);
   const [isVerified, setIsVerified] = useState(false);
   const [userData, setUserData] = useState(null);
+  const [serverVerification, setServerVerification] = useState(null);
  
   const getVerificationReq = async () => {
     // 環境変数から認証情報を取得
@@ -67,6 +68,67 @@ function ReclaimDemo() {
       },
     });
   };
+
+  // バックエンドにプルーフを送信して検証する関数
+  const submitProofsToServer = async () => {
+    if (!proofs) {
+      console.error('プルーフが存在しません');
+      return;
+    }
+
+    try {
+      setServerVerification({ status: 'pending', message: '検証中...' });
+      
+      // 絶対URLを使用
+      const backendUrl = 'http://localhost:3000/api/verify-proofs';
+      console.log('バックエンドにプルーフを送信します...', backendUrl);
+      
+      const response = await fetch(backendUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ proofs }),
+        // CORSリクエストのためのクレデンシャル設定
+        credentials: 'include',
+      });
+      
+      // レスポンスのステータスとテキストを確認
+      console.log('レスポンスステータス:', response.status);
+      const responseText = await response.text();
+      console.log('レスポンステキスト:', responseText);
+      
+      // テキストが空でなく、JSONとして解析可能な場合のみパース
+      let result;
+      try {
+        result = responseText ? JSON.parse(responseText) : {};
+      } catch (parseError) {
+        console.error('JSONパースエラー:', parseError);
+        throw new Error(`レスポンスが無効なJSONです: ${responseText.substring(0, 100)}...`);
+      }
+      
+      if (response.ok) {
+        console.log('バックエンド検証成功:', result);
+        setServerVerification({ 
+          status: 'success', 
+          message: 'バックエンドでの検証に成功しました',
+          data: result
+        });
+      } else {
+        console.error('バックエンド検証失敗:', result);
+        setServerVerification({ 
+          status: 'error', 
+          message: `検証エラー: ${result.error || '不明なエラー'}` 
+        });
+      }
+    } catch (error) {
+      console.error('プルーフ送信中にエラーが発生しました:', error);
+      setServerVerification({ 
+        status: 'error', 
+        message: `送信エラー: ${error.message}` 
+      });
+    }
+  };
  
   return (
     <div style={{ 
@@ -108,6 +170,60 @@ function ReclaimDemo() {
           borderLeft: '4px solid #4caf50'
         }}>
           <h2 style={{ color: '#2e7d32', marginTop: 0 }}>ログインに成功しWeb証明を生成しました！</h2>
+          
+          {/* バックエンド検証ボタンを追加 */}
+          <button
+            onClick={submitProofsToServer}
+            style={{
+              backgroundColor: '#2e7d32',
+              color: 'white',
+              border: 'none',
+              padding: '10px 20px',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              fontSize: '16px',
+              marginBottom: '15px'
+            }}
+          >
+            バックエンドで検証する
+          </button>
+
+          {/* バックエンド検証結果の表示 */}
+          {serverVerification && (
+            <div style={{ 
+              margin: '15px 0', 
+              padding: '10px', 
+              backgroundColor: serverVerification.status === 'success' ? '#e8f5e9' : 
+                              serverVerification.status === 'error' ? '#ffebee' : '#fff8e1',
+              borderRadius: '4px',
+              borderLeft: `4px solid ${
+                serverVerification.status === 'success' ? '#4caf50' : 
+                serverVerification.status === 'error' ? '#f44336' : '#ffc107'
+              }`
+            }}>
+              <p style={{ 
+                color: serverVerification.status === 'success' ? '#2e7d32' : 
+                      serverVerification.status === 'error' ? '#d32f2f' : '#ff8f00',
+                margin: '0'
+              }}>
+                {serverVerification.message}
+              </p>
+              {serverVerification.data && (
+                <details>
+                  <summary style={{ cursor: 'pointer', marginTop: '10px' }}>サーバー検証詳細</summary>
+                  <pre style={{ 
+                    backgroundColor: '#f5f5f5', 
+                    padding: '10px', 
+                    borderRadius: '4px',
+                    overflow: 'auto',
+                    fontSize: '14px'
+                  }}>
+                    {JSON.stringify(serverVerification.data, null, 2)}
+                  </pre>
+                </details>
+              )}
+            </div>
+          )}
           
           {userData ? (
             <div style={{ 
